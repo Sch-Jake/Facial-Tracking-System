@@ -21,12 +21,7 @@ Make sure you have python 3.x installed on you machine
     git clone https://github.com/Sch-Jake/Facial-Tracking-System.git
     cd cheating-recognition-software
     ```
-2. **Create a virtual environment** (optional but recommended):
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
-3. **Install the required packages**:
+2. **Install the required packages**:
     ```bash
     pip install -r requirements.txt
     ```
