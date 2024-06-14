@@ -4,11 +4,12 @@ from Src.cheating_detection import check_for_cheating
 from datetime import datetime
 
 if __name__ == "__main__":
+    #Initialize the face and eye detector
     detector = FaceEyeDetector()
     
-    # Record the start time
+    # Record the start time of the detection process
     start_time = datetime.now()
-    
+    #run the detector process
     detector.run()
     
     # Calculate the total duration
@@ -20,4 +21,5 @@ if __name__ == "__main__":
     
     # Check for cheating
     cheating_detected, message = check_for_cheating(detector.pupil_detection_count, detector.look_away_detected_count, detector.no_pupil_detection_count, total_duration)
+    #print response
     print(message)
