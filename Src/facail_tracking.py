@@ -4,14 +4,29 @@ from datetime import datetime
 
 class FaceEyeDetector:
     def __init__(self, video_source=0):
-        # Initialize video capture object 
-        self.video_capture = cv2.VideoCapture(video_source)
+        """
+        Initialize the FaceEyeDetector object.
 
-        # Load the Haar Cascade Classifiers for face and eye detection
+        Parameters:
+        - video_source (int or str): Index or path of the video source (default is 0 for webcam).
+
+        Attributes:
+        - video_capture (cv2.VideoCapture): Video capture object to capture frames from the video source.
+        - face_classifier (cv2.CascadeClassifier): Haar cascade classifier for detecting faces.
+        - eye_classifier (cv2.CascadeClassifier): Haar cascade classifier for detecting eyes.
+        - last_pupil_detected_time (datetime or None): Timestamp of the last detected pupil or None if no pupil detected yet.
+        - pupil_detected_times (list): List of time durations between successive pupil detections.
+        - pupil_not_detected_times (list): List of time durations between successive periods without pupil detection.
+        - pupil_detection_count (int): Total count of pupil detections.
+        - no_pupil_detection_count (int): Total count of periods without pupil detection.
+        - look_away_detected_count (int): Total count of instances where the pupil is detected near the eye outline,
+                                          indicating the user may be looking away.
+        """
+         
+
+        self.video_capture = cv2.VideoCapture(video_source)
         self.face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
         self.eye_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
-        
-        #Initialize variables for pupil detection timing and counts
         self.last_pupil_detected_time = None 
         self.pupil_detected_times = []
         self.pupil_not_detected_times = []
@@ -20,7 +35,15 @@ class FaceEyeDetector:
         self.look_away_detected_count = 0
     
     def detect_faces_and_eyes(self, frame):
+        """
+        Detect faces and eyes in a given frame and track pupil detections.
 
+        Parameters:
+        - frame (numpy.ndarray): Input frame to detect faces and eyes.
+
+        Returns:
+        - frame (numpy.ndarray): Processed frame with visualizations (rectangles and circles) around detected faces and eyes.
+        """
         # Convert the input from to grayscale for detection
         gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
