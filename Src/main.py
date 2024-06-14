@@ -1,6 +1,6 @@
-from facail_tracking import FaceEyeDetector
-from plotting import plot_detection_times
-from cheating_detection import check_for_cheating
+from Src.facail_tracking import FaceEyeDetector
+from Src.plotting import plot_detection_times
+from Src.cheating_detection import check_for_cheating
 from datetime import datetime
 
 if __name__ == "__main__":
