@@ -4,10 +4,15 @@ from datetime import datetime
 
 class FaceEyeDetector:
     def __init__(self, video_source=0):
+        # Initialize video capture object 
         self.video_capture = cv2.VideoCapture(video_source)
+
+        # Load the Haar Cascade Classifiers for face and eye detection
         self.face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
         self.eye_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
-        self.last_pupil_detected_time = None
+        
+        #Initialize variables for pupil detection timing and counts
+        self.last_pupil_detected_time = None 
         self.pupil_detected_times = []
         self.pupil_not_detected_times = []
         self.pupil_detection_count = 0
@@ -15,31 +20,46 @@ class FaceEyeDetector:
         self.look_away_detected_count = 0
     
     def detect_faces_and_eyes(self, frame):
+
+        # Convert the input from to grayscale for detection
         gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        #detect the face in the grayscale image
         faces = self.face_classifier.detectMultiScale(gray_image, 1.1, 5, minSize=(40, 40))
-        pupil_detected = False  # Flag to track pupil detection
+        # Flag to track pupil detection
+        pupil_detected = False 
         
+        #check if no faces are detected
         if len(faces) == 0:
-            # No faces detected
+            # Record no pupil detection time and increment count
             self.pupil_not_detected_times.append(0)
             self.no_pupil_detection_count += 1
-        
+
+        #iterate through faces
         for (x, y, w, h) in faces:
+            #draw a rectangle around the detected faces
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
+            
+            #Define region of interest (ROI) in grayscale and color frames
             roi_gray = gray_image[y:y+h, x:x+w]
             roi_color = frame[y:y+h, x:x+w]
             
-            # Increase minSize to avoid detecting nostrils
+            # Increase minSize to avoid detecting nostrils based by person
+            #Detect eyes within the face ROI
             eyes = self.eye_classifier.detectMultiScale(roi_gray, 1.1, 5, minSize=(125,125))
+           #iterate through detected eyes
             for (ex, ey, ew, eh) in eyes:
                 eye_center = (ex + ew // 2, ey + eh // 2)
+
+                #Draw a rectangle around the detected eye
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (255, 0, 0), 2)
                 
-                # Use HoughCircles for pupil detection within the eye ROI
+                # detect pupils within the eye ROI using HoughCircles
                 eye_roi_gray = roi_gray[ey:ey+eh, ex:ex+ew]
                 circles = cv2.HoughCircles(eye_roi_gray, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
                                            param1=50, param2=30, minRadius=5, maxRadius=30)
                 
+                # if pupils are detected process them
                 if circles is not None:
                     circles = np.round(circles[0, :]).astype("int")
                     for (x_circle, y_circle, r) in circles:
@@ -77,6 +97,7 @@ class FaceEyeDetector:
         while True:
             # Capture frame-by-frame
             ret, video_frame = self.video_capture.read()
+            #exit the loop iif the frame is not captured successfully
             if not ret:
                 break
             
