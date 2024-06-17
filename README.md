@@ -19,7 +19,6 @@ Make sure you have python 3.x installed on you machine
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/Sch-Jake/Facial-Tracking-System.git
-    cd cheating-recognition-software
     ```
 2. **Install the required packages**:
     ```bash
@@ -28,7 +27,7 @@ Make sure you have python 3.x installed on you machine
 ### Running the Application
 1. **Run the main application**:
     ```bash
-    python main.py
+    python3 main.py
     ```
 2. **Exit the application and visualize the data**
     ```bash
